@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Radar Chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Performance Radar Chart</h1>
+        <select id="studentSelect">
+            <option value="0">Alice</option>
+            <option value="1">Bob</option>
+            <option value="2">Charlie</option>
+        </select>
+        <canvas id="radarChart"></canvas>
+    </div>
+
+    <script>
+        const students = [
+            { name: "Alice", attendance: 6, punctuality: 5, collaboration: 7, effort: 6 },
+            { name: "Bob", attendance: 4, punctuality: 7, collaboration: 5, effort: 6 },
+            { name: "Charlie", attendance: 7, punctuality: 6, collaboration: 6, effort: 7 },
+        ];
+
+        let chart;
+
+        function createChart(studentData) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            if (chart) {
+                chart.destroy();
+            }
+
+            chart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Attendance', 'Punctuality', 'Collaboration', 'Effort'],
+                    datasets: [{
+                        label: studentData.name,
+                        data: [
+                            studentData.attendance,
+                            studentData.punctuality,
+                            studentData.collaboration,
+                            studentData.effort
+                        ],
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                    }]
+                },
+                options: {
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 7
+                        }
+                    }
+                }
+            });
+        }
+
+        const studentSelect = document.getElementById('studentSelect');
+        studentSelect.addEventListener('change', (event) => {
+            const selectedStudent = students[event.target.value];
+            createChart(selectedStudent);
+        });
+
+        // Initialize chart with the first student
+        createChart(students[0]);
+    </script>
+</body>
+</html>
