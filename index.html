@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Performance Radar Chart</title>
+    <title>Student Performance Radar Charts</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
             margin: 0;
@@ -22,6 +22,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             max-width: 600px;
             width: 100%;
+            margin-bottom: 20px;
         }
         h1 {
             text-align: center;
@@ -34,46 +35,66 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        canvas {
+            margin-bottom: 40px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Student Performance Radar Chart</h1>
+        <h1>Student Performance Radar Charts</h1>
         <select id="studentSelect">
             <option value="0">Alice</option>
             <option value="1">Bob</option>
             <option value="2">Charlie</option>
         </select>
-        <canvas id="radarChart"></canvas>
+        <canvas id="radarChart1"></canvas>
+        <canvas id="radarChart2"></canvas>
     </div>
 
     <script>
+        // Data for students
         const students = [
-            { name: "Alice", attendance: 6, punctuality: 5, collaboration: 7, effort: 6 },
-            { name: "Bob", attendance: 4, punctuality: 7, collaboration: 5, effort: 6 },
-            { name: "Charlie", attendance: 7, punctuality: 6, collaboration: 6, effort: 7 },
+            { 
+                name: "Alice", 
+                attendance: 90, punctuality: 85, homework: 92, // Chart 1 data
+                knowledge: 5, mathArguments: 6, problemSolving: 7, patternRecognition: 6, 
+                explainingResults: 6, communication: 5, integration: 6, technology: 5 // Chart 2 data
+            },
+            { 
+                name: "Bob", 
+                attendance: 75, punctuality: 95, homework: 80, // Chart 1 data
+                knowledge: 4, mathArguments: 5, problemSolving: 6, patternRecognition: 5, 
+                explainingResults: 4, communication: 6, integration: 5, technology: 4 // Chart 2 data
+            },
+            { 
+                name: "Charlie", 
+                attendance: 85, punctuality: 90, homework: 88, // Chart 1 data
+                knowledge: 6, mathArguments: 6, problemSolving: 5, patternRecognition: 7, 
+                explainingResults: 7, communication: 6, integration: 7, technology: 6 // Chart 2 data
+            }
         ];
 
-        let chart;
+        let chart1, chart2;
 
-        function createChart(studentData) {
-            const ctx = document.getElementById('radarChart').getContext('2d');
+        // Function to create the first radar chart
+        function createChart1(studentData) {
+            const ctx1 = document.getElementById('radarChart1').getContext('2d');
             
-            if (chart) {
-                chart.destroy();
+            if (chart1) {
+                chart1.destroy();
             }
 
-            chart = new Chart(ctx, {
+            chart1 = new Chart(ctx1, {
                 type: 'radar',
                 data: {
-                    labels: ['Attendance', 'Punctuality', 'Collaboration', 'Effort'],
+                    labels: ['Attendance', 'Punctuality', 'Homework completion'],
                     datasets: [{
                         label: studentData.name,
                         data: [
                             studentData.attendance,
                             studentData.punctuality,
-                            studentData.collaboration,
-                            studentData.effort
+                            studentData.homework
                         ],
                         fill: true,
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
@@ -85,32 +106,80 @@
                     }]
                 },
                 options: {
-                    elements: {
-                        line: {
-                            borderWidth: 3
-                        }
-                    },
                     scales: {
                         r: {
-                            angleLines: {
-                                display: true
-                            },
                             suggestedMin: 0,
-                            suggestedMax: 7
+                            suggestedMax: 100 // Scale 0 to 100 for percentages
                         }
                     }
                 }
             });
         }
 
+        // Function to create the second radar chart
+        function createChart2(studentData) {
+            const ctx2 = document.getElementById('radarChart2').getContext('2d');
+            
+            if (chart2) {
+                chart2.destroy();
+            }
+
+            chart2 = new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        'Knowledge and Understanding', 
+                        'Constructing and Applying Mathematical Arguments',
+                        'Problem Solving', 
+                        'Pattern Recognition and Generalization',
+                        'Understanding and Explaining Results', 
+                        'Communication', 
+                        'Integration of Knowledge', 
+                        'Use of Technology'
+                    ],
+                    datasets: [{
+                        label: studentData.name,
+                        data: [
+                            studentData.knowledge,
+                            studentData.mathArguments,
+                            studentData.problemSolving,
+                            studentData.patternRecognition,
+                            studentData.explainingResults,
+                            studentData.communication,
+                            studentData.integration,
+                            studentData.technology
+                        ],
+                        fill: true,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        pointBackgroundColor: 'rgb(255, 99, 132)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(255, 99, 132)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            suggestedMin: 0,
+                            suggestedMax: 7 // Scale 0 to 7
+                        }
+                    }
+                }
+            });
+        }
+
+        // Event listener for student selection
         const studentSelect = document.getElementById('studentSelect');
         studentSelect.addEventListener('change', (event) => {
             const selectedStudent = students[event.target.value];
-            createChart(selectedStudent);
+            createChart1(selectedStudent);
+            createChart2(selectedStudent);
         });
 
-        // Initialize chart with the first student
-        createChart(students[0]);
+        // Initialize both charts with the first student
+        createChart1(students[0]);
+        createChart2(students[0]);
     </script>
 </body>
 </html>
